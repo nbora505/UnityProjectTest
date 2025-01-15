@@ -21,9 +21,10 @@ public class PlayerController : MonoBehaviour
 
     //public List<string, string> bombList = new List<string, string>();
     public GameObject[] bombPrefab;
-    public int remainedBomb = 3; //  int 남은 폭탄심지 수
+    public int remainingBomb = 3; //  int 남은 폭탄심지 수
     public int playerOrder =0; //    플레이어 순서별 가중치 0 to 3;
     public bool bombVisible =false;   
+    public bool isDead =false;//플레이어의 사망
 
     //[함수]
     public void DeclareWins() //함수 승수 선언()
@@ -72,7 +73,7 @@ public class PlayerController : MonoBehaviour
     {
         bool bombVisible = true;
 
-        AppearBomb(remainedBomb);
+        AppearBomb(remainingBomb);
 
         // 예로 들면 이런게 되겠죠.
         // 함수 1의 파라메타 값이 float입니다.
@@ -87,11 +88,12 @@ public class PlayerController : MonoBehaviour
         
     }   //함수 끝
 
-    public void AppearBomb(int remainedBomb) //함수 심지 등장(int 심지 수)
+    public void AppearBomb(int remainingBomb) //함수 심지 등장(int 심지 수)
     {
 
         //    if문으로 어떤 player 앞 심지 생성될지 위치 선정
-        //  플레이어 선택 존중하려면 랜덤 배제해야 하나 편의상 선택과 무관하게 랜덤으로 터지는 폭탄 생성
+        //  플레이어 선택 존중하려면 랜덤 배제해야 하나 편의상 선택과
+        //  무관하게 랜덤으로 터지는 폭탄 생성
         
        
         
@@ -118,6 +120,7 @@ public class PlayerController : MonoBehaviour
         if(istrueBomb)
         {
             // 사망처리
+            bool isDead = true;
         }
         else
         {
