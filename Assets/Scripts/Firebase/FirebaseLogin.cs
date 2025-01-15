@@ -238,23 +238,12 @@ public class FirebaseLogin : MonoBehaviour
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
             DocumentReference docRef = db.Collection("users").Document(auth.CurrentUser.UserId);
 
-            db.RunTransactionAsync(transaction =>
+            docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
-                return transaction.GetSnapshotAsync(docRef).ContinueWithOnMainThread(task =>
+                if (task.IsCompleted)
                 {
-                    if (!task.Result.Exists)
-                    {
-                        throw new Exception("Id isn't exists");
-                    }
-
-                    if (task.IsCanceled || task.IsFaulted)
-                    {
-                        throw new Exception("transcation callback");
-                    }
-                    transaction.Delete(docRef);
-
-                    return Task.FromResult(true);
-                });
+                    docRef.DeleteAsync();
+                }
             }).ContinueWithOnMainThread(task =>
             {
                 if (task.IsCompletedSuccessfully)
@@ -296,14 +285,13 @@ public class FirebaseLogin : MonoBehaviour
 
     void InitFirebase() //Firebase 의존성 확인 및 초기화
     {
-
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
             var dependencyStatus = task.Result;
             if (dependencyStatus == Firebase.DependencyStatus.Available)
             {
                 //성공처리
-                app = FirebaseApp.DefaultInstance;
-                auth = FirebaseAuth.DefaultInstance;
+                app = Firebase.FirebaseApp.DefaultInstance;
+                auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
                 Debug.Log("Firebase Dependency check success");
             }
             else
