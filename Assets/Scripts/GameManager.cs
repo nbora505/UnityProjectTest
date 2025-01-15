@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    IEnumerator CheckBomb(int player)
+    public IEnumerator CheckBomb(int player)
     {
         //벌칙 대상자의 남아있는 폭탄들 활성화시키기
         for (int i = 0; i < playerList[player].GetComponent<PlayerController>().remainedBomb; i++)

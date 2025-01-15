@@ -7,17 +7,18 @@ using UnityEngine.UI;
 
 
 
+
 public class ButtonManager : MonoBehaviour
 {
     [Header("GameManager")]
     public GameManager gameManager; 
-    [Header("Score")]
+    [Header("Score,UI")]
     public Text text;
     public int expectedWins = 0;
-
+    public Text logText;
     [Header("bomb")]
     public List<int> selectedBomb = new List<int>() {0,1,2};
-    private int selectedBombIndex = 0;
+    public int selectedBombIndex;
 
     [Header("Card")]
     public List<Button> testBtn;
@@ -25,6 +26,19 @@ public class ButtonManager : MonoBehaviour
     [Header("checkUI")]
     public GameObject checkPanel;
 
+
+    public Outline CardOutline;
+    public Vector3 originalCardPosition;
+    public Color originalOutlineColor;
+
+    public Outline BombWickOutline;
+    public Vector3 originalBombWickPosition;
+    public Color originalBombWickOutlineColor;
+
+    public void Start()
+    {
+        
+    }
     public void GetLayName(string buttonName)
     {
         switch (buttonName)
@@ -60,7 +74,7 @@ public class ButtonManager : MonoBehaviour
                 break;
 
             case "SubmitButton":
-                OnSubmitButtonClicked(); // 제출 버튼 클릭 시 호출
+                //OnSubmitCardButtonClicked(); // 제출 버튼 클릭 시 호출
                 break;
 
             case "ReadyButton":
@@ -131,85 +145,123 @@ public class ButtonManager : MonoBehaviour
     public void OnIncreaseScoreButtonClicked() // 승수 증가
     {
         expectedWins++;
-        text.text = "Score" + expectedWins.ToString();
+        text.text = "예상 승리횟수 : " + expectedWins.ToString() + "번";
 
     }
    
     public void OnDecreaseScoreButtonClicked() // 승수 감소
     {
         expectedWins--;
-        text.text = "Score" + expectedWins.ToString();
+        text.text = "예상 승리횟수 " + expectedWins.ToString() + "번";
     }
-
-    public void OnSubmitButtonClicked() // 제출 버튼 기능
+    public void OnSubmitScoreButtonClicked()
     {
-        // 
+        logText.text = "예상 승리횟수 : " + expectedWins + "번 제출완료";
     }
+    
     public void OnSelectCardButtonClicked(Button clickBtn) // 카드 선택 버튼 기능,클릭한 버튼 인자로 받음
     {
+
         // 레이에 맞은 오브젝트의 테두리 색깔과 y값 포지션 증가
-        Outline outline = clickBtn.GetComponent<Outline>();
-        if (outline != null)
+        CardOutline = clickBtn.GetComponent<Outline>();
+        Vector3 CardClickYPosition = clickBtn.transform.position;
+        
+        if (CardOutline != null)
         {
-            outline.effectColor = Color.yellow; // 테두리 색상을 노란색으로 변경
+            originalOutlineColor = CardOutline.effectColor; // 원래 색상 저장
+            CardOutline.effectColor = Color.yellow; // 테두리 색상을 노란색으로 변경
         }
-        Vector3 ClickYPosition = clickBtn.transform.position; 
-        ClickYPosition.y += 50; 
-        clickBtn.transform.position = ClickYPosition;
+
+        originalCardPosition = clickBtn.transform.position; // 원래 카드 위치 저장
+        CardClickYPosition = originalCardPosition; // 현재 위치 값 저장
+        CardClickYPosition.y += 50; // y값 증가
+        clickBtn.transform.position = CardClickYPosition;// 카드 위치 변경
         checkPanel.SetActive(true);
 
         // 선택하시겠습니까?의 ui 활성화
         // CardManager의 제출된 함수 쪽으로 해당 카드 제출
         //testBtn.gameObject.SetActive(true); // 버튼 활성화
 
+    }
+    public void OnSubmitCardButtonClicked() // 카드제출 버튼 기능
+    {
+        if (CardOutline != null)
+        {
+            CardOutline.effectColor = originalOutlineColor;
+        }
+
+        if (originalCardPosition != null)
+        {     
+            CardOutline.transform.position = originalCardPosition;
+        }
+        logText.text = "? 카드 제출완료";
 
     }
-    
-    
+
     public void OnSelectHeartButtonClicked(Button clickHeartBtn) // 심지 선택 버튼 기능
     {
-        checkPanel.SetActive(true);
-        Outline outline = clickHeartBtn.GetComponent<Outline>();
-        if (outline != null)
+        BombWickOutline = clickHeartBtn.GetComponent<Outline>();
+        Vector3 BombWickClickYPosition = clickHeartBtn.transform.position;
+
+        if (CardOutline != null)
         {
-            outline.effectColor = Color.yellow; // 테두리 색상을 노란색으로 변경
+
+            originalOutlineColor = CardOutline.effectColor; // 원래 색상 저장
+            CardOutline.effectColor = Color.yellow; // 테두리 색상을 노란색으로 변경
         }
-        Vector3 ClickYPosition = clickHeartBtn.transform.position;
-        ClickYPosition.y += 50;
-        clickHeartBtn.transform.position = ClickYPosition;
 
+        originalBombWickPosition = clickHeartBtn.transform.position; // 원래 카드 위치 저장
+        BombWickClickYPosition = originalBombWickPosition; // 현재 위치 값 저장
+        BombWickClickYPosition.y += 50; // y값 증가
+        clickHeartBtn.transform.position = BombWickClickYPosition;// 카드 위치 변경
         
-        // 레이에 맞은 오브젝트 색깔 변화
-        // 선택하시겠습니까?의 ui 활성화
-        // 게임매니저에게 선택된 심지 전송
-    }
-    public void SendSelectedBombButtonClicked(int index) //선택한 심지의 값을 게임매니저로 보내기
-    {
-        if (index >= 0 && index < selectedBomb.Count)
-        {
-            selectedBombIndex = index; // 선택된 심지의 인덱스 저장
-            Debug.Log("선택된 폭탄 심지: " + selectedBomb[selectedBombIndex]);
 
-            // 게임 매니저에 선택된 심지의 값을 전달
-            if (text != null)
-            {
-                //gameManager.SetSelectedBomb(selectedBomb[selectedBombIndex]);
-                 text.text = "선택된 폭탄 심지 : " + selectedBomb[selectedBombIndex].ToString() + "번";
-            }
+
+        //// 레이에 맞은 오브젝트 색깔 변화
+        //// 선택하시겠습니까?의 ui 활성화
+        //// 게임매니저에게 선택된 심지 전송
+    }
+    public void SendSelectedBombButtonClicked(int index) //선택한 심지의 값을 게임매니저로 보내
+    {
+        selectedBombIndex =  index; // 선택된 심지의 인덱스 저장          
+
+        // 게임 매니저에 선택된 심지의 값을 전달
+        if (text != null)
+        {
+            
+            //text.text = "선택된 폭탄 심지 : " + selectedBombIndex.ToString() + "번";
+        }
+
+        if (gameManager != null)
+        {
+            gameManager.CheckBomb(selectedBombIndex);  // 심지의 인덱스를 게임 매니저로 전달
+            logText.text = "선택된 폭탄 심지 : "+selectedBombIndex.ToString() + "번 제출 완료";
         }
         else
         {
-            Debug.LogError("유효하지 않은 인덱스입니다.");
+            Debug.LogWarning("gameManager가 null임.");
         }
-        Debug.Log("제출된 심지 값 : " + selectedBomb);
+        if (CardOutline != null)
+        {
+            BombWickOutline.effectColor = originalBombWickOutlineColor;
+        }
+
+        if (originalCardPosition != null)
+        {
+            BombWickOutline.transform.position = originalBombWickPosition;
+        }
+
         //게임매니저
-        
+
     }
 
-    public void SubmitBombIndex(int selectedBombIndex)
-    {
-       text.text= "제출완료 : " + selectedBombIndex.ToString()+"번";
-    }
+    //public void SubmitBombIndex(int selectedBombIndex)
+    //{
+
+    //    gameManager.CheckBomb(selectedBombIndex);
+    //    text.text = "제출완료 : " + selectedBombIndex.ToString() + "번";
+    //    Debug.Log("받은 값 : " + gameManager.CheckBomb(selectedBombIndex));
+    //}
 
 
 
@@ -236,7 +288,7 @@ public class ButtonManager : MonoBehaviour
     
     public void OnSettingsButtonClickedInGame()  // 설정 버튼 기능
     {
-        
+        //설정 UI TRUE로 변경
     }
     
     public void OnSignUpButtonClicked() // 회원가입 버튼 기능
