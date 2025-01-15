@@ -17,6 +17,8 @@ public class BombManager : MonoBehaviour
         gameManager.selectedBomb = bombNum;
     }
 
+    
+
     void Update()
     {
         

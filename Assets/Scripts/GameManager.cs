@@ -6,9 +6,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject[] playerList;
-    List<GameObject> penaltyList;
-    List<GameObject> deadList;
+    public List<GameObject> penaltyList;
+    public List<GameObject> deadList;
     GameObject leaderPlayer;
+    ScoreManager scoreManager;
 
     public int maxPlayerCnt = 4;
 
@@ -69,7 +70,7 @@ public class GameManager : MonoBehaviour
                 if (isPenalty[i] == true)
                 {
                     penaltyList.Add(playerList[i]);
-                    CheckBomb(i);
+                    scoreManager.CheckBomb(i);
                 }
             }
 
@@ -103,7 +104,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void SubmitCard()
+    void SubmitCard() // SubmitCard(int subitCard)
     {
         Debug.Log("=========카드 제출 단계=========");
 
@@ -112,46 +113,20 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playerList.Length; i++)
         {
             List<int> curCardList = playerList[curTurn].GetComponent<PlayerController>().cardList;
-            int yimsiCard = Random.Range(0, curCardList.Count);
-            int selectedCard = curCardList[yimsiCard];
+            // tempCard was init for testing
+            int tempCard = Random.Range(0, curCardList.Count);
+            // 실제 구현 단계에서는, 이거를 레이케이스트로 해서 받아온 카드의 정보가 되겠죠?
+            int selectedCard = curCardList[tempCard];
 
             Debug.Log(playerList[curTurn] + "의 카드 제출 : " + selectedCard);
 
-            playerList[curTurn].GetComponent<PlayerController>().cardList.RemoveAt(yimsiCard);
+            playerList[curTurn].GetComponent<PlayerController>().cardList.RemoveAt(tempCard);
 
             curTurn++;
             if (curTurn >= playerList.Length) curTurn = 0;
         }
 
     }
-
-    public IEnumerator CheckBomb(int player)
-    {
-        //벌칙 대상자의 남아있는 폭탄들 활성화시키기
-        for (int i = 0; i < playerList[player].GetComponent<PlayerController>().remainedBomb; i++)
-        {
-            playerList[player].GetComponent<PlayerController>().bombPrefab[i].SetActive(true);
-        }
-
-        //남아있는 심지 수만큼 랜덤 돌려서 당첨 심지 결정하기
-        int realBomb = Random.Range(0, playerList[player].GetComponent<PlayerController>().remainedBomb);
-
-        //심지가 골라질때까지 기다리기(기본값은 -1)
-        yield return new WaitUntil(() => selectedBomb >= 0);
-
-        //받아온 폭탄 번호가 당첨 폭탄 번호랑 똑같으면 사망시키기
-        if (selectedBomb == realBomb)
-        {
-            //playerList.Remove(playerList[player]);
-            deadList.Add(playerList[player]);
-        }
-        else
-        {
-            playerList[player].GetComponent<PlayerController>().remainedBomb--;
-            penaltyList.Clear();
-        }
-    }
-
     void ResetLists()
     {
         cardManager.GetComponent<CardManager>().ResetCardSet();

@@ -6,10 +6,12 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
+    GameManager gm;
+    PlayerController pc;
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -17,50 +19,36 @@ public class ScoreManager : MonoBehaviour
     {
         
     }
-
-    public void DistinguishScore(bool isWin, PlayerController player)
+    public IEnumerator CheckBomb(int player)
     {
-        if (isWin)
-            return;
-        else
-            player.remainedBomb--; // This is a temporary line put in for the current structure.
+        //벌칙 대상자의 남아있는 폭탄들 활성화시키기
+        for (int i = 0; i < gm.playerList[player].GetComponent<PlayerController>().remainingBomb; i++)
+        {
+            gm.playerList[player].GetComponent<PlayerController>().bombPrefab[i].SetActive(true);
+        }
+
+        //남아있는 심지 수만큼 랜덤 돌려서 당첨 심지 결정하기
+        //pc.DrawBomb();
+
+
+        //int realBomb = Random.Range(0, gm.playerList[player].GetComponent<PlayerController>().remainingBomb);
+
+        //심지가 골라질때까지 기다리기(기본값은 -1)
+        yield return new WaitUntil(() => gm.selectedBomb >= 0);
+
+        pc.DrawBomb();
+
+    }
+    public void Timeout()//함수 타임 아웃(파라메타 없음)
+    {        //    GameManager.벌칙 대상 리스트.Clear();
+             //   벌칙대상 리스트는 스코어 매니저, 폭탄터지는 건 게임매니저
+             //    GameManager.폭탄 비교(this.player, 랜덤);
+    }   //    함수 끝
+
+    public void DistinguishScore(PlayerController player)
+    {
+            player.remainingBomb--; // This is a temporary line put in for the current structure.
                                    // If a bomb selection line is ever created,
                                    // it should run the function, subtract the bomb, and so on.
-    }
-
-
-    /// <summary>
-    /// This Func exist for what i want to compare the one player with other player
-    /// </summary>
-    /// <param name="cardList">
-    /// The cardList param's role is, get whole of submit cards from in this round.
-    /// and, init getCardList as cardList param.
-    /// #Critical : The cardList param must be pushed through the .Add() function sequentially, each time in the correct order.
-    /// This is because we will be checking the order of the List in the CardCompare function below.
-    /// </param>
-    /// <param name="submitTime">
-    /// The role of the submitTime parameter is to get the order of the player who submitted the card.
-    /// The submitTime is compared to the getCardList List, which is sequentially added to the List, to determine who is the winner.
-    /// </param>
-    public bool CardCompare(List<int> cardList, int submitTime)
-    {
-        List<int> cards = new List<int>();
-        //List<bool> isWin = new List<bool>();
-        
-        cards = cardList;
-        int submitCard = cardList[submitTime];
-
-        for (int i = 0; i < cards.Count; i++)
-        {
-            if (submitCard > cards[i]) continue;
-            else if(submitCard == cards[i])
-            {
-                if (submitTime > i) return false;
-                else if (submitTime == i) continue;
-                else continue;
-            }
-            else return false;
-        }
-        return true;
     }
 }
