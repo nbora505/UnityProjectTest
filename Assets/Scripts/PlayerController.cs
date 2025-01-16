@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -20,6 +21,25 @@ public class PlayerController : MonoBehaviour
     public bool bombVisible = false;
     public bool isDead = false;//플레이어의 사망
     public GameManager gm;
+
+    private void Update()
+    {
+        if(isDead) return;
+
+        // 왼팔이나, 다른 팔을 트레킹을 못하게 하려면
+        // 우리 프리펩 내에 트래킹 관련 오브젝트가 있음
+        // 그거 disable 하면 되드라고요.
+        // 요로면 발작 안 일어남.
+
+        // -> 게임 메니저에서 전부 체크하고 맵을 컨트롤 하는.
+        // -> 게임 메니저에서 턴 관련이 있으니까, 
+        // -> Enum을 써서 스위치문을 통해 쓰는 것.
+
+
+        // 오른손 트리거를 눌렀을 때, 카드를 선택할 수 있어야 하고.
+        // 왼손 트리거를 눌렀을 땐, 내 패를 볼 수 있어야 겠죠?
+    }
+    // 카드 제출과 카드 확인이 필요하다.
 
     //[함수]
     public void DeclareWins() //함수 승수 선언()
@@ -56,7 +76,7 @@ public class PlayerController : MonoBehaviour
             gm.deadList.Add(this.gameObject);
             gm.penaltyList.Remove(this.gameObject);
             // 사망처리
-            bool isDead = true;
+            isDead = true;
         }
         else
         {

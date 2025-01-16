@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
         //라운드 시작
         StartRound();
     }
+    // 
 
     void StartRound()
     {
