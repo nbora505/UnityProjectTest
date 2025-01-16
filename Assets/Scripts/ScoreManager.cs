@@ -27,17 +27,19 @@ public class ScoreManager : MonoBehaviour
         {
             player.bombPrefab[i].SetActive(true);
         }
-        yield return new WaitUntil(() => gm.selectedBomb >= 0);
-        pc.DrawBomb();
 
         // player.남아 있는 포탄들 활성화 시키는 함수();
         // -> 이렇게 되면 한명에 대한 함수로 바뀌는 것.
         // -> 게임 메니저에서 for문 돌려서 해당하는 모든 플레이어에게 이 함수 실행킨다.
+
         //남아있는 심지 수만큼 랜덤 돌려서 당첨 심지 결정하기
-        //int realBomb = Random.Range(0, player.remainingBomb);
-        //심지가 골라질때까지 기다리기(기본값은 -1)       
+        int realBomb = Random.Range(0, player.remainingBomb);
+
+        //심지가 골라질때까지 기다리기(기본값은 -1)
+        yield return new WaitUntil(() => gm.selectedBomb >= 0);
+
         // pc.DrawBomb()은 폭탄을 선택했을 때, 실행되어야 함.
-        
+        //pc.DrawBomb();
 
     }
     public IEnumerator Timeout(PlayerController player)//함수 타임 아웃(파라메타 없음)
