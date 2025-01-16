@@ -2,8 +2,10 @@
 //using System.Collections.Generic;
 //using UnityEngine;
 
+using System;
 using System.Data.Common;
 using System.Diagnostics;
+using Unity.VisualScripting;
 
 public class AIPlayer : PlayerController
 {
@@ -48,6 +50,49 @@ public class AIPlayer : PlayerController
     //    }
 
     /// <summary>
+    /// A computational function for declaring its own victory that the AI should call before the game starts.
+    /// Alpha and beta must never exceed 1.
+    /// </summary>
+    /// <param name="alpha">
+    /// The parameter alpha is a weighting factor for whether the AI should focus more on the probability of losing for a single card in its hand.
+    /// If you want the AI to focus more on the probability of losing than the value of the card, you can increase the value of the alpha.
+    /// </param>
+    /// <param name="beta">
+    /// The parameter beta is a weighting factor to make the AI focus more on the value of the card. 
+    /// If you want the AI to focus more on the value of the card than the chance of losing, you can increase this number.
+    /// </param>
+    public int CalculateOddsOfWinning(float alpha, float beta)
+    {
+        if (alpha + beta > 1)
+        {
+            UnityEngine.Debug.LogError($"현재 알파와 베타의 합이 1을 초과 했습니다. 알파와 베타의 합을 다시 확인해보시오.{alpha + beta}");
+            return 0;
+        }
+
+        //// 1안
+        //float calTotalWinningRate = 0;
+        //for (int i = 0; i < cardList.Count; i++)
+        //{
+        //    calTotalWinningRate += CalculateWeightsForCard_I(cardList[i],alpha, beta, 0);
+        //}
+
+        //int finalTotalWin = (int)Math.Round(calTotalWinningRate); 
+
+        //return finalTotalWin;
+
+        // 2안
+
+        int finalTotalWin = 0;
+
+        for (int i = 0; i < cardList.Count; i++)
+        {
+            finalTotalWin += (int)Math.Round(CalculateWeightsForCard_I(cardList[i], alpha, beta, 0));
+        }
+
+        return finalTotalWin;
+    }
+
+    /// <summary>
     /// Functions related to the AI's behavioral weight formula for Card I.
     /// The sum of alpha, beta, and gamma must not exceed 1. 
     /// Therefore, each number must be distributed within the number 1.
@@ -68,21 +113,33 @@ public class AIPlayer : PlayerController
     /// gamma is the AI's behavioral weighting of AI own card submission order. 
     /// If you want the AI to focus more on your card submission sequence, you can increase this number.
     /// </param>
-    /// <returns></returns>
     public float CalculateWeightsForCard_I(int card_I, float alpha, float beta, float gamma)
     {
+        if (card_I > 4 || card_I < 1)
+        {
+            UnityEngine.Debug.LogError($"현재 파라메타로 들어온 카드의 값이 4를 초과하거나, 1 미만입니다. 카드의 값을 확인해보시오. {card_I}");
+            return 0;
+        }
+
+        if (alpha + beta + gamma > 1)
+        {
+            UnityEngine.Debug.LogError($"알파, 베타, 감마의 총 합이 1을 넘어 섰습니다. 알파 베타 감마의 현재 총합 {alpha + beta + gamma}");
+            return 0;
+        }
+
+
         // #Critical: Specify that the base is the denominator.
         // The numerator is calculated by subtracting card_I after the denominator sigma calculation.
-        float sigmaMeterForCards = 0;
+        float sigmaPlusMeterForCards = 0;
 
         if (card_I != 4)
         {
             for (int i = card_I; i <= 4; i++)
             {
-                sigmaMeterForCards += i;
+                sigmaPlusMeterForCards += i;
             }
         }
-        float lossingProbability = (sigmaMeterForCards - card_I) / sigmaMeterForCards;
+        float losingProbability = (sigmaPlusMeterForCards - card_I) / sigmaPlusMeterForCards;
 
         float cardValueFormulasResult = card_I / 4;
 
@@ -101,16 +158,18 @@ public class AIPlayer : PlayerController
                 orderWeight = 0.25f;
                 break;
             default:
-                break;
+                UnityEngine.Debug.Log($"순서 계산에 있어, 문제가 생겼습니다.{submitTime}을 확인해보십시오.");
+                return 0;
         }
 
         // (1 - losingProbability) is the probability of winning.
         // cardValueFormulasResult means the result of the calculation for the value of the card.
         // orderWeight is the computational weight of the AI's own ordering.
-        float result = alpha * (1 - lossingProbability) +
+        float result = alpha * (1 - losingProbability) +
             beta * cardValueFormulasResult +
             gamma * orderWeight;
 
+        // return card_i's weight
         return result;
     }
 }
