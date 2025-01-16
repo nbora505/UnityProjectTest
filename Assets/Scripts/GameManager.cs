@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     public List<GameObject> penaltyList;
     public List<GameObject> deadList;
     GameObject leaderPlayer;
-    ScoreManager scoreManager;
 
     public int maxPlayerCnt = 4;
 
@@ -26,6 +25,7 @@ public class GameManager : MonoBehaviour
     public int[] winCntOfEachTurn; //각각의 턴마다 플레이어들이 기록한 승리 횟수
 
     public CardManager cardManager;
+    ScoreManager scoreManager;
 
     void Start()
     {
@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log(curPlayer + " 예측 실패...");
 
                 //실패한 플레이어한테 폭탄 심지 등장시키게 하기
-                //curPlayer.GetComponent<PlayerController>().AppearBomb();
+                scoreManager.CheckBomb(curPlayer.GetComponent<PlayerController>());
             }
 
             curTurn++;

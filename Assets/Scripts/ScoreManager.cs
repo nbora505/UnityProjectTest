@@ -23,26 +23,22 @@ public class ScoreManager : MonoBehaviour
     public IEnumerator CheckBomb(PlayerController player)
     {
         //벌칙 대상자의 남아있는 폭탄들 활성화시키기
-        //for (int i = 0; i < gm.playerList[player].GetComponent<PlayerController>().remainingBomb; i++)
-        //{
-        //    gm.playerList[player].GetComponent<PlayerController>().bombPrefab[i].SetActive(true);
-        //}
+        for (int i = 0; i < player.remainingBomb; i++)
+        {
+            player.bombPrefab[i].SetActive(true);
+        }
 
         // player.남아 있는 포탄들 활성화 시키는 함수();
         // -> 이렇게 되면 한명에 대한 함수로 바뀌는 것.
         // -> 게임 메니저에서 for문 돌려서 해당하는 모든 플레이어에게 이 함수 실행킨다.
 
-
         //남아있는 심지 수만큼 랜덤 돌려서 당첨 심지 결정하기
-        // pc.DrawBomb()은 폭탄을 선택했을 때, 실행되어야 함.
-        //pc.DrawBomb();
-
-
-        //int realBomb = Random.Range(0, gm.playerList[player].GetComponent<PlayerController>().remainingBomb);
+        int realBomb = Random.Range(0, player.remainingBomb);
 
         //심지가 골라질때까지 기다리기(기본값은 -1)
         yield return new WaitUntil(() => gm.selectedBomb >= 0);
 
+        // pc.DrawBomb()은 폭탄을 선택했을 때, 실행되어야 함.
         //pc.DrawBomb();
 
     }

@@ -84,5 +84,5 @@ public class PlayerController : MonoBehaviour
             // false가 지워지겠죠.
             // 생존처리
         }
-    } //    함수 끝
+    }
 }
