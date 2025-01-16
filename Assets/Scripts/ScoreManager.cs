@@ -44,7 +44,7 @@ public class ScoreManager : MonoBehaviour
     }
     public IEnumerator Timeout(PlayerController player)//함수 타임 아웃(파라메타 없음)
     {        //    GameManager.벌칙 대상 리스트.Clear();
-             //   벌칙대상 리스트는 스코어 매니저, 폭탄터지는 건 게임매니저
+             //   벌칙대상 리스트와 폭탄터지는 건 게임매니저
              //    GameManager.폭탄 비교(this.player, 랜덤);
 
         yield return new WaitForSeconds(10);
@@ -59,10 +59,11 @@ public class ScoreManager : MonoBehaviour
         }
     }   //    함수 끝
 
-    public void DistinguishScore(PlayerController player)
-    {
-            player.remainingBomb--; // This is a temporary line put in for the current structure.
-                                   // If a bomb selection line is ever created,
-                                   // it should run the function, subtract the bomb, and so on.
-    }
+    //public void DistinguishScore(PlayerController player)
+    //{
+    //        player.remainingBomb--; // This is a temporary line put in for the current structure.
+    //                               // If a bomb selection line is ever created,
+    //                               // it should run the function, subtract the bomb, and so on.
+    //}
+    // player.DrawBomb()안에서 이미 남은폭탄 갯수 줄이고 있다
 }

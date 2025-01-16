@@ -75,7 +75,8 @@ public class GameManager : MonoBehaviour
                 {
                     //playerList[curTurn]이 이번 턴 승자라는 뜻!
                     winCntOfEachTurn[curTurn]++;
-                    Debug.Log("이번 턴의 승자는 " + playerList[curTurn] + "! (현재 " + winCntOfEachTurn[curTurn] + "승)");
+                    Debug.Log("이번 턴의 승자는 " + playerList[curTurn] + 
+                        "! (현재 " + winCntOfEachTurn[curTurn] + "승)");
                 }
                 curTurn++;
                 if (curTurn >= playerList.Length) curTurn = 0;
