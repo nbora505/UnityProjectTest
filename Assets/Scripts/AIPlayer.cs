@@ -75,8 +75,6 @@ public class AIPlayer : PlayerController
         {
             eachOfSubmitedCardWeightList.Add(CalculateWeightsForCard_I(submitCardList[i], alpha, beta, gamma, i));
         }
-
-        eachOfSubmitedCardWeightList.Max();
         
         float highWeight = eachOfSubmitedCardWeightList.Max();
 
