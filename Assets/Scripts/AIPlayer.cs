@@ -44,6 +44,9 @@ public class AIPlayer : PlayerController
         return throwCard;
     }
 
+    // DetermineWinningCard() 함수를 수정하여, AI가 달성한 승수에 도달하게 된다면, AI가 일부로 패배하는 로직으로 수정하여야 함.
+    // 또한, 해당 로직을 추가하여, 수정하게 된다면 함수의 이름을 적당한 이름으로 변경하여야 함.
+
     /// <summary>
     /// This function finds the weight of each previously submitted card, 
     /// determines the weight of the cards in the AI's own hand, 
