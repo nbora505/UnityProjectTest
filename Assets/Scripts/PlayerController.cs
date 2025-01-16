@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     //[º¯¼ö]
     public bool AIPlayer = false;
-    public List<int> cardList;
+    public List<int> cardList; // the card list in user's hand.
 
     public List<bool> bombList = new List<bool>() {
         false, false, true };
