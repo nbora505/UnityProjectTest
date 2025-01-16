@@ -20,13 +20,18 @@ public class ScoreManager : MonoBehaviour
     {
         
     }
-    public IEnumerator CheckBomb(int player)
+    public IEnumerator CheckBomb(PlayerController player)
     {
         //벌칙 대상자의 남아있는 폭탄들 활성화시키기
-        for (int i = 0; i < gm.playerList[player].GetComponent<PlayerController>().remainingBomb; i++)
-        {
-            gm.playerList[player].GetComponent<PlayerController>().bombPrefab[i].SetActive(true);
-        }
+        //for (int i = 0; i < gm.playerList[player].GetComponent<PlayerController>().remainingBomb; i++)
+        //{
+        //    gm.playerList[player].GetComponent<PlayerController>().bombPrefab[i].SetActive(true);
+        //}
+
+        // player.남아 있는 포탄들 활성화 시키는 함수();
+        // -> 이렇게 되면 한명에 대한 함수로 바뀌는 것.
+        // -> 게임 메니저에서 for문 돌려서 해당하는 모든 플레이어에게 이 함수 실행킨다.
+
 
         //남아있는 심지 수만큼 랜덤 돌려서 당첨 심지 결정하기
         // pc.DrawBomb()은 폭탄을 선택했을 때, 실행되어야 함.
@@ -41,7 +46,7 @@ public class ScoreManager : MonoBehaviour
         //pc.DrawBomb();
 
     }
-    public IEnumerator Timeout()//함수 타임 아웃(파라메타 없음)
+    public IEnumerator Timeout(PlayerController player)//함수 타임 아웃(파라메타 없음)
     {        //    GameManager.벌칙 대상 리스트.Clear();
              //   벌칙대상 리스트는 스코어 매니저, 폭탄터지는 건 게임매니저
              //    GameManager.폭탄 비교(this.player, 랜덤);
@@ -50,7 +55,7 @@ public class ScoreManager : MonoBehaviour
 
         if (!isSelect)
         {
-            pc.DrawBomb();
+            player.DrawBomb();
         }
         else
         {

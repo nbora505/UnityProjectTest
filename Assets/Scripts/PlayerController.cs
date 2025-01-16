@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     }//함수 끝
 
-    public void AppearBomb(int remainingBomb) //함수 심지 등장(int 심지 수)
+    public void AppearBomb() //함수 심지 등장(int 심지 수)
     {
         for (int i = 0; i < remainingBomb; i++)
         {
@@ -62,16 +62,14 @@ public class PlayerController : MonoBehaviour
         //  플레이어 선택 존중하려면 랜덤 배제해야 하나 편의상 선택과
         //  무관하게 랜덤으로 터지는 폭탄 생성
 
-
-
-    }//함수 끝
+    }
 
     public void DrawBomb()//함수 폭탄 결정(파라메타 없음)
     {
         int rnd = Random.Range(0, bombList.Count);
-        bool istrueBomb = bombList[rnd]; // 딕셔너리가 필요한가? 필요없는것으로 판단
+        bool isTrueBomb = bombList[rnd]; // 딕셔너리가 필요한가? 필요없는것으로 판단
 
-        if (istrueBomb)
+        if (isTrueBomb)
         {
             gm.deadList.Add(this.gameObject);
             gm.penaltyList.Remove(this.gameObject);
