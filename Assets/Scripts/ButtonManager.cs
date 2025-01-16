@@ -234,7 +234,7 @@ public class ButtonManager : MonoBehaviour
 
         if (gameManager != null)
         {
-            gameManager.CheckBomb(selectedBombIndex);  // 심지의 인덱스를 게임 매니저로 전달
+            //gameManager.CheckBomb(selectedBombIndex);  // 심지의 인덱스를 게임 매니저로 전달
             logText.text = "선택된 폭탄 심지 : "+selectedBombIndex.ToString() + "번 제출 완료";
         }
         else
