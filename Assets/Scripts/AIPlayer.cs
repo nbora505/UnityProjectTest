@@ -6,6 +6,7 @@ using System;
 using System.Data.Common;
 using System.Diagnostics;
 using Unity.VisualScripting;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class AIPlayer : PlayerController
 {
@@ -49,6 +50,8 @@ public class AIPlayer : PlayerController
     //        // 게임 결과를 평가하고 예상 승리와 비교
     //    }
 
+
+
     /// <summary>
     /// A computational function for declaring its own victory that the AI should call before the game starts.
     /// Alpha and beta must never exceed 1.
@@ -86,7 +89,7 @@ public class AIPlayer : PlayerController
 
         for (int i = 0; i < cardList.Count; i++)
         {
-            finalTotalWin += (int)Math.Round(CalculateWeightsForCard_I(cardList[i], alpha, beta, 0));
+            finalTotalWin += (int)Math.Round(CalculateWeightsForCard_I(cardList[i], alpha, beta, 0, submitTime));
         }
 
         return finalTotalWin;
@@ -112,8 +115,13 @@ public class AIPlayer : PlayerController
     /// <param name="gamma">
     /// gamma is the AI's behavioral weighting of AI own card submission order. 
     /// If you want the AI to focus more on your card submission sequence, you can increase this number.
+    /// </param>   
+    /// <param name="submitOrder">
+    /// This parameter is used to tell the function what the current AI's turn is. 
+    /// Different turns will have different values for the turn weight, so it's important to be sure and accurate.
+    /// The value should be in the range of 0 to 3.
     /// </param>
-    public float CalculateWeightsForCard_I(int card_I, float alpha, float beta, float gamma)
+    public float CalculateWeightsForCard_I(int card_I, float alpha, float beta, float gamma, int submitOrder)
     {
         if (card_I > 4 || card_I < 1)
         {
@@ -145,7 +153,7 @@ public class AIPlayer : PlayerController
 
         float orderWeight = 0;
 
-        switch (submitTime)
+        switch (submitOrder)
         {
             case 0: orderWeight = 1.0f;
                 break;
