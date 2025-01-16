@@ -3,13 +3,19 @@
 //using UnityEngine;
 
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
+using UnityEngine.Rendering;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class AIPlayer : PlayerController
 {
+    List<float> eachOfSubmitedCardWeightList = new List<float>();
+    Dictionary<int, float> eachOfAICardWeightList = new Dictionary<int, float>();
     //    public List<Card> handCards;// 자신의 카드 패
     //    public int expectedWin;// 예상 승리 설정
 
@@ -50,7 +56,66 @@ public class AIPlayer : PlayerController
     //        // 게임 결과를 평가하고 예상 승리와 비교
     //    }
 
+    /// <summary>
+    /// This function finds the weight of each previously submitted card, 
+    /// determines the weight of the cards in the AI's own hand, 
+    /// and compares them against those weights to come up with the smallest number of cards that it can play while still winning.
+    /// The parameters submitOrder, alpha, beta, and gamma contained in the parameters below are the parameters that will go into the CalculateWeightsForCard_I() function, 
+    /// and their descriptions are detailed in the CalculateWeightsForCard_I() function.
+    /// So, if you've used the CalculateWeightsForCard_I() function before, 
+    /// please use the same alpha, beta, and gamma weights that you used in CalculateWeightsForCard_I().
+    /// </summary>
+    /// <param name="submitCardList">
+    /// #Critical: 
+    /// List parameters for cards submitted to date. 
+    /// This list must come from the Game Manager script, 
+    /// and the corresponding list maintained by the Game Manager must be Add() to the list in the order of cards submitted,
+    /// without sorting such as Sort(), etc.
+    /// </param>
+    /// <returns>
+    /// In general, if the AI is in a situation where it can submit a winning card, it will return a value for that card. 
+    /// However, if the AI is in a situation where it cannot win, it returns 0.
+    /// </returns>
+    public int DetermineWinningCard(List<int>submitCardList, float alpha, float beta, float gamma, int submitOrder)
+    {
+        eachOfAICardWeightList.Clear();
+        eachOfSubmitedCardWeightList.Clear();
 
+        List<int> target = new List<int>();
+
+        for (int i = 0; i < submitCardList.Count; i++)
+        {
+            eachOfSubmitedCardWeightList.Add(CalculateWeightsForCard_I(submitCardList[i], alpha, beta, gamma, i));
+        }
+
+        eachOfSubmitedCardWeightList.Max();
+        
+        float highWeight = eachOfSubmitedCardWeightList.Max();
+
+        for (int j = 0; j < cardList.Count; j++)
+        {
+            eachOfAICardWeightList.Add(cardList[j], CalculateWeightsForCard_I(cardList[j], alpha, beta, gamma, submitOrder));
+        }
+
+        foreach(var dicItem in eachOfAICardWeightList)
+        {
+            if (dicItem.Value > highWeight)
+                target.Add(dicItem.Key);
+        }
+
+        if (target.Count == 0)
+        {
+            UnityEngine.Debug.Log("현재 AI가 이길 수 있는 경우의 수가 없습니다.");
+            return 0;
+        }
+        else
+        {
+            int chooseCard = target.Min();
+            cardList.Remove(chooseCard);
+            return chooseCard;
+        }
+
+    }
 
     /// <summary>
     /// A computational function for declaring its own victory that the AI should call before the game starts.
