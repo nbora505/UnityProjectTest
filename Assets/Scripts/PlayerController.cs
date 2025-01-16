@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     //[변수]
     public bool AIPlayer = false;
-    public List<int> cardList; // the card list in user's hand.
+    public List<int> cardList;
 
     public List<bool> bombList = new List<bool>() {
         false, false, true };
@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public bool isDead = false;//플레이어의 사망
     public GameManager gm;
 
+    public List<int> expectedWins = new List<int>();
     private void Update()
     {
         if(isDead) return;

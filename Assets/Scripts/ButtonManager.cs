@@ -10,35 +10,45 @@ using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour
 {
-    [Header("GameManager")]
+    [Header("Scripts")]
     public GameManager gameManager; 
+    public ScoreManager scoreManager;
+    public PlayerController playerController;
+    public CardManager cardManager;
+
     [Header("Score,UI")]
     public Text text;
-    public int expectedWins = 0;
+    public int expectedWin = 0;
     public Text logText;
+
     [Header("bomb")]
     public List<int> selectedBomb = new List<int>() {0,1,2};
     public int selectedBombIndex;
-
-    [Header("Card")]
-    public List<Button> testBtn;
-    public Button submitBtn;
-    [Header("checkUI")]
-    public GameObject checkPanel;
-
-
-    public Outline CardOutline;
-    public Vector3 originalCardPosition;
-    public Color originalOutlineColor;
-
     public Outline BombWickOutline;
     public Vector3 originalBombWickPosition;
     public Color originalBombWickOutlineColor;
 
+    [Header("Card")]
+    public List<int> playerCards;
+    public List<Button> testBtn;
+    public Button submitBtn;
+    public Outline CardOutline;
+    public Vector3 originalCardPosition;
+    public Color originalOutlineColor;
+
+    [Header("checkUI")]
+    public GameObject checkPanel;
+
+
+    
+
+    
+
     public void Start()
     {
-        
+        playerCards = cardManager.card;
     }
+    #region 레이 충돌시 관련(추후 사용예정)
     public void GetLayName(string buttonName)
     {
         switch (buttonName)
@@ -142,23 +152,29 @@ public class ButtonManager : MonoBehaviour
         }
 
     }
+    #endregion 
+
+    #region 승 수 관련
     public void OnIncreaseScoreButtonClicked() // 승수 증가
     {
-        expectedWins++;
-        text.text = "예상 승리횟수 : " + expectedWins.ToString() + "번";
+        expectedWin++;
+        text.text = "예상 승리횟수 : " + expectedWin.ToString() + "번";
 
     }
    
     public void OnDecreaseScoreButtonClicked() // 승수 감소
     {
-        expectedWins--;
-        text.text = "예상 승리횟수 " + expectedWins.ToString() + "번";
+        expectedWin--;
+        text.text = "예상 승리횟수 " + expectedWin.ToString() + "번";
     }
     public void OnSubmitScoreButtonClicked()
     {
-        logText.text = "예상 승리횟수 : " + expectedWins + "번 제출완료";
+        playerController.expectedWins.Add(expectedWin);
+        logText.text = "예상 승리횟수 : " + expectedWin.ToString() + "번 제출완료";
     }
-    
+    #endregion
+
+    #region 카드 관련
     public void OnSelectCardButtonClicked(Button clickBtn) // 카드 선택 버튼 기능,클릭한 버튼 인자로 받음
     {
 
@@ -183,8 +199,11 @@ public class ButtonManager : MonoBehaviour
         //testBtn.gameObject.SetActive(true); // 버튼 활성화
 
     }
-    public void OnSubmitCardButtonClicked() // 카드제출 버튼 기능
+    public void OnSubmitCardButtonClicked(int cardValue) // 카드제출 버튼 기능
     {
+        playerCards.RemoveAt(cardValue);
+        
+        cardManager.CardCompare(playerCards,2);
         if (CardOutline != null)
         {
             CardOutline.effectColor = originalOutlineColor;
@@ -198,6 +217,10 @@ public class ButtonManager : MonoBehaviour
 
     }
 
+    #endregion
+
+
+    #region 폭탄 심지 관련
     public void OnSelectHeartButtonClicked(Button clickHeartBtn) // 심지 선택 버튼 기능
     {
         BombWickOutline = clickHeartBtn.GetComponent<Outline>();
@@ -221,21 +244,17 @@ public class ButtonManager : MonoBehaviour
         //// 선택하시겠습니까?의 ui 활성화
         //// 게임매니저에게 선택된 심지 전송
     }
-    public void SendSelectedBombButtonClicked(int index) //선택한 심지의 값을 게임매니저로 보내
+    public void SendSelectedBombButtonClicked() //선택한 심지의 값을 게임매니저로 보내
     {
-        selectedBombIndex =  index; // 선택된 심지의 인덱스 저장          
+        gameManager.selectedBomb = 0;         
 
         // 게임 매니저에 선택된 심지의 값을 전달
-        if (text != null)
-        {
-            
-            //text.text = "선택된 폭탄 심지 : " + selectedBombIndex.ToString() + "번";
-        }
+        
 
         if (gameManager != null)
         {
             //gameManager.CheckBomb(selectedBombIndex);  // 심지의 인덱스를 게임 매니저로 전달
-            logText.text = "선택된 폭탄 심지 : "+selectedBombIndex.ToString() + "번 제출 완료";
+            logText.text = "선택된 폭탄 심지 제출 완료";
         }
         else
         {
@@ -254,15 +273,8 @@ public class ButtonManager : MonoBehaviour
         //게임매니저
 
     }
-
-    //public void SubmitBombIndex(int selectedBombIndex)
-    //{
-
-    //    gameManager.CheckBomb(selectedBombIndex);
-    //    text.text = "제출완료 : " + selectedBombIndex.ToString() + "번";
-    //    Debug.Log("받은 값 : " + gameManager.CheckBomb(selectedBombIndex));
-    //}
-
+    #endregion
+    
 
 
     public void OnReadyButtonClicked() // 레디 버튼 기능
@@ -270,7 +282,6 @@ public class ButtonManager : MonoBehaviour
        // ready 값을 true로 설정
        // 게임매니저에게 자신의 ready값 전송
     }
-
     
     public void OnStartButtonClicked() // 시작 버튼 기능
     {
