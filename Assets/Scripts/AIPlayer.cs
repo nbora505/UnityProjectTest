@@ -158,7 +158,7 @@ public class AIPlayer : PlayerController
                 orderWeight = 0.25f;
                 break;
             default:
-                UnityEngine.Debug.Log($"순서 계산에 있어, 문제가 생겼습니다.{submitTime}을 확인해보십시오.");
+                UnityEngine.Debug.LogError($"순서 계산에 있어, 문제가 생겼습니다.{submitTime}을 확인해보십시오. submitTime은 반드시 0~3 사이의 숫자여야 합니다.");
                 return 0;
         }
 
