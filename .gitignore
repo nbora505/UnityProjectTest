@@ -73,3 +73,34 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 Assets/Firebase
+
+# Firebase 관련 파일 및 폴더 제외
+
+# Firebase Editor 설정 파일
+[Ff]irebase/Editor/**/*.meta
+[Ff]irebase/Editor/**/*.cs
+
+# Firebase Crashlytics
+[Ff]irebase/Crashlytics
+
+# Firebase Database 파일
+[Ff]irebase/Database
+
+# Firebase Storage
+[Ff]irebase/Storage
+
+# GoogleServices-Info.plist (iOS용 Firebase 설정 파일)
+GoogleServices-Info.plist
+
+# google-services.json (Android용 Firebase 설정 파일)
+google-services.json
+
+# Firebase Authentication
+[Ff]irebase/Auth
+
+# Firebase Realtime Database의 테스트 데이터 파일
+[Ff]irebase/**/*.dat
+
+# Firebase Analytics
+[Ff]irebase/Analytics
+

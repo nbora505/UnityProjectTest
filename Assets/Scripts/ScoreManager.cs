@@ -7,11 +7,12 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     GameManager gm;
-    PlayerController pc;
+    public PlayerController pc;
+    bool isSelect = false;
     // Start is called before the first frame update
     void Start()
     {
-
+        gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -28,6 +29,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         //남아있는 심지 수만큼 랜덤 돌려서 당첨 심지 결정하기
+        // pc.DrawBomb()은 폭탄을 선택했을 때, 실행되어야 함.
         //pc.DrawBomb();
 
 
@@ -36,13 +38,24 @@ public class ScoreManager : MonoBehaviour
         //심지가 골라질때까지 기다리기(기본값은 -1)
         yield return new WaitUntil(() => gm.selectedBomb >= 0);
 
-        pc.DrawBomb();
+        //pc.DrawBomb();
 
     }
-    public void Timeout()//함수 타임 아웃(파라메타 없음)
+    public IEnumerator Timeout()//함수 타임 아웃(파라메타 없음)
     {        //    GameManager.벌칙 대상 리스트.Clear();
              //   벌칙대상 리스트는 스코어 매니저, 폭탄터지는 건 게임매니저
              //    GameManager.폭탄 비교(this.player, 랜덤);
+
+        yield return new WaitForSeconds(10);
+
+        if (!isSelect)
+        {
+            pc.DrawBomb();
+        }
+        else
+        {
+            yield return null;
+        }
     }   //    함수 끝
 
     public void DistinguishScore(PlayerController player)
