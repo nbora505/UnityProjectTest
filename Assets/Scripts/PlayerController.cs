@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public bool bombVisible = false;
     public bool isDead = false;//플레이어의 사망
     public GameManager gm;
+
     public List<int> expectedWins = new List<int>();
     private void Update()
     {

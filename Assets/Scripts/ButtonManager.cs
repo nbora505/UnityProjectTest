@@ -169,7 +169,8 @@ public class ButtonManager : MonoBehaviour
     }
     public void OnSubmitScoreButtonClicked()
     {
-        logText.text = "예상 승리횟수 : " + playerController.expectedWins + "번 제출완료";
+        playerController.expectedWins.Add(expectedWin);
+        logText.text = "예상 승리횟수 : " + expectedWin.ToString() + "번 제출완료";
     }
     #endregion
 
