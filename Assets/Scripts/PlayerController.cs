@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     //[변수]
     public bool AIPlayer = false;
-    public List<int> cardList;
+    public List<int> cardList = new List<int>(); // 카드를 나눠줄 때, 해당 플레이어에 .Add()
 
     public List<bool> bombList = new List<bool>() {
         false, false, true };
@@ -22,7 +22,12 @@ public class PlayerController : MonoBehaviour
     public bool isDead = false;//플레이어의 사망
     public GameManager gm;
 
-    public List<int> expectedWins = new List<int>();
+    public int expectedWins = 0;
+    public int nowTotalWins = 0;
+
+    // 요거를 게임메니저에서 받아와가지고 초기화할 수 있도록.
+    // 플레이어 콘트롤러 쪽에서 게임메니저의 예상 승수를 받아오고, 자신의 턴이랑 비교해서 넣으면 되겠죠?
+    public List<int> expectedWin = new List<int>();
     private void Update()
     {
         if(isDead) return;
@@ -63,6 +68,12 @@ public class PlayerController : MonoBehaviour
         //  플레이어 선택 존중하려면 랜덤 배제해야 하나 편의상 선택과
         //  무관하게 랜덤으로 터지는 폭탄 생성
 
+    }
+
+    // Must to called at GameManager
+    public void InitsubmitTime(int submitTime)
+    {
+        this.submitTime = submitTime;
     }
 
     public void DrawBomb()//함수 폭탄 결정(파라메타 없음)

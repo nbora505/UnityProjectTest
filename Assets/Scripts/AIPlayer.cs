@@ -16,9 +16,11 @@ public class AIPlayer : PlayerController
 {
     List<float> eachOfSubmitedCardWeightList = new List<float>();
     Dictionary<int, float> eachOfAICardWeightList = new Dictionary<int, float>();
-    //    public List<Card> handCards;// 자신의 카드 패
-    //    public int expectedWin;// 예상 승리 설정
 
+    private void Start()
+    {
+        expectedWins = CalculateOddsOfWinning(0.7f, 0.3f);
+    }
 
     //    public void DecideAction() //행동 결정
     //    {
@@ -31,9 +33,84 @@ public class AIPlayer : PlayerController
     //        AnalyzeCard();   
     //    }
 
+    // 더 추가 되야 하는건 Update 됐을 때 계속해서 상호작용 되도록 하는거랑
+    // Update에서 저 승리 검사 했을 때 0이 나오면 가비지 카드 나오게 하는거랑
+    // 예측 승수에 도달했을 때, 패배는 하되 최대한 높은 가중치의 카드를 내게 하는거.
+
+    // 기존의 DetermineWinningCard 함수를 똑같이 복붙을 하고 조금만 수정하면 됨.
+    // 그럼 AI가 0승을 선언했고 첫 턴이라면?
+    // -> 가장 낮은 가중치의 카드를 던지게.
+
+    // Update 문에서는 두 가지 조건으로 갈라져야 함.
+    // AI 플레이어가 예측한 승수에 도달하였는가. 또는 그렇지 않은가.
+    // AI 플레이어는 예측한 승수에 도달하였다면, DetermineBestLosingCard를 사용해야 하고,
+    // 도달하지 못했다면 DeterminWinningCard를 사용하여야 함.
+
+
     /// <summary>
-    /// #Critical: This function must be used after the DetermineWinningCard() function has been called. 
-    /// If DetermineWinningCard() returns a value of 0, the AI has determined that it has no winning hand, and the AI should discard the least valuable card.
+    /// Use this function if the current AI player has reached the predicted win and shouldn't win anymore.
+    /// This function finds the weight of each previously submitted card, 
+    /// determines the weight of the cards in the AI's own hand, 
+    /// Then, AI player compares its weights to the weights of the field, and submits the highest number of card that it can afford to lose
+    /// If 0 is returned, there are no losing conditions, and the ThrowGarbageCard() function should be called.
+    /// The parameters submitOrder, alpha, beta, and gamma contained in the parameters below are the parameters that will go into the CalculateWeightsForCard_I() function, 
+    /// and their descriptions are detailed in the CalculateWeightsForCard_I() function.
+    /// So, if you've used the CalculateWeightsForCard_I() function before, 
+    /// please use the same alpha, beta, and gamma weights that you used in CalculateWeightsForCard_I().
+    /// </summary>
+    /// <param name="submitCardList">
+    /// #Critical: 
+    /// List parameters for cards submitted to date. 
+    /// This list must come from the Game Manager script, 
+    /// and the corresponding list maintained by the Game Manager must be Add() to the list in the order of cards submitted,
+    /// without sorting such as Sort(), etc.
+    /// </param>
+    /// <returns>
+    /// The AI player will usually submit the highest number of card within the conditions under which it can lose.
+    /// However, if the AI is in a situation where it cannot lose, it returns 0.
+    /// </returns>
+    public int DetermineBestLosingCard(List<int> submitCardList, float alpha, float beta, float gamma, int submitOrder)
+    {
+        eachOfAICardWeightList.Clear();
+        eachOfSubmitedCardWeightList.Clear();
+
+        List<int> target = new List<int>();
+
+        for (int i = 0; i < submitCardList.Count; i++)
+        {
+            eachOfSubmitedCardWeightList.Add(CalculateWeightsForCard_I(submitCardList[i], alpha, beta, gamma, i));
+        }
+
+        float highWeight = eachOfSubmitedCardWeightList.Max();
+
+        for (int j = 0; j < cardList.Count; j++)
+        {
+            eachOfAICardWeightList.Add(cardList[j], CalculateWeightsForCard_I(cardList[j], alpha, beta, gamma, submitOrder));
+        }
+
+        foreach (var dicItem in eachOfAICardWeightList)
+        {
+            if (dicItem.Value <= highWeight)
+                target.Add(dicItem.Key);
+        }
+
+        if (target.Count == 0)
+        {
+            UnityEngine.Debug.Log("현재 AI가 질 수 있는 경우의 수가 없습니다.");
+            return 0;
+        }
+        else
+        {
+            int chooseCard = target.Max();
+            cardList.Remove(chooseCard);
+            return chooseCard;
+        }
+
+    }
+
+    /// <summary>
+    /// #Critical: This function must be used after the DetermineWinningCard() and DetermineBestLosingCard() functions have been called. 
+    /// If DetermineWinningCard() and DetermineBestLosingCard() return a value of 0, the AI has determined that it has no winning hand, and the AI should discard the least valuable card.
     /// </summary>
     /// <returns>The lowest-scoring card in AI hands</returns>
     public int ThrowGarbageCard()
@@ -43,9 +120,6 @@ public class AIPlayer : PlayerController
 
         return throwCard;
     }
-
-    // DetermineWinningCard() 함수를 수정하여, AI가 달성한 승수에 도달하게 된다면, AI가 일부로 패배하는 로직으로 수정하여야 함.
-    // 또한, 해당 로직을 추가하여, 수정하게 된다면 함수의 이름을 적당한 이름으로 변경하여야 함.
 
     /// <summary>
     /// This function finds the weight of each previously submitted card, 
@@ -202,6 +276,11 @@ public class AIPlayer : PlayerController
             }
         }
         float losingProbability = (sigmaPlusMeterForCards - card_I) / sigmaPlusMeterForCards;
+
+        if (card_I == 0)
+        {
+            losingProbability = 0;
+        }
 
         float cardValueFormulasResult = card_I / 4;
 
