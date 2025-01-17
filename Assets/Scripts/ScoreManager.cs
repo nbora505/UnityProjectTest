@@ -39,7 +39,7 @@ public class ScoreManager : MonoBehaviour
         yield return new WaitUntil(() => gm.selectedBomb >= 0);
 
         // pc.DrawBomb()은 폭탄을 선택했을 때, 실행되어야 함.
-        //pc.DrawBomb();
+        player.DrawBomb();
 
     }
     public IEnumerator Timeout(PlayerController player)//함수 타임 아웃(파라메타 없음)

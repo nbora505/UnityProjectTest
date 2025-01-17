@@ -36,11 +36,11 @@ public class GameManager : MonoBehaviour
         leaderPlayer = playerList[curTurn];
 
         //라운드 시작
-        StartRound();
+        StartCoroutine(StartRound());
     }
-    // 
 
-    void StartRound()
+
+    IEnumerator StartRound()
     {
         //리스트 초기화
         ResetLists();
@@ -52,8 +52,7 @@ public class GameManager : MonoBehaviour
         cardManager.TestUserCard(playerList.Length);
 
         //승수 결정받기;
-        DecideWinCnt();
-
+        yield return StartCoroutine(DecideWinCnt());
 
         //4번의 턴 시작
         for (int i = 1; i <= 4; i++)
@@ -66,7 +65,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("=========카드 제출 단계=========");
             for (int j = 0; j < playerList.Length; j++)
             {
-                SubmitCard();
+                yield return StartCoroutine(SubmitCard());
             }
 
             //제출한 카드 보고 승자 결정하기(카드매니저에 들어가 있는 함수 호출)
@@ -84,10 +83,11 @@ public class GameManager : MonoBehaviour
                 curTurn++;
                 if (curTurn >= playerList.Length) curTurn = 0;
             }
-
+            yield return new WaitForSeconds(5f);
         }
 
         //라운드가 끝날 때마다 승수 맞췄는지 판단, 벌칙 결정(미완성)
+        Debug.Log("=========이번 라운드 결과=========");
         for (int i = 0; i < playerList.Length; i++)
         {
             GameObject curPlayer = playerList[curTurn];
@@ -101,13 +101,13 @@ public class GameManager : MonoBehaviour
                 Debug.Log(curPlayer + " 예측 실패...");
 
                 //실패한 플레이어한테 폭탄 심지 등장시키게 하기
-                scoreManager.CheckBomb(curPlayer.GetComponent<PlayerController>());
+                yield return StartCoroutine(scoreManager.CheckBomb(curPlayer.GetComponent<PlayerController>()));
             }
-
+            yield return new WaitForSeconds(1f);
             curTurn++;
             if (curTurn >= playerList.Length) curTurn = 0;
         }
-
+        yield return new WaitForSeconds(10f);
 
         //라운드 종료
         curRound++;
@@ -117,11 +117,11 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            StartRound();
+            StartCoroutine(StartRound());
         }
     }
 
-    void DecideWinCnt()
+    IEnumerator DecideWinCnt()
     {
         Debug.Log("=========승수 선언 단계=========");
 
@@ -134,10 +134,13 @@ public class GameManager : MonoBehaviour
 
             curTurn++;
             if (curTurn >= playerList.Length) curTurn = 0;
+
+            yield return new WaitForSeconds(1f);
         }
+        yield return null;
     }
 
-    void SubmitCard() // SubmitCard(int subitCard)
+    IEnumerator SubmitCard() // SubmitCard(int subitCard)
     {
         //리더 플레이어부터 차례로 카드 제출. 임시로 랜덤숫자로 카드제출 처리해둠
         List<int> curCardList = playerList[curTurn].GetComponent<PlayerController>().cardList;
@@ -154,8 +157,8 @@ public class GameManager : MonoBehaviour
 
             curTurn++;
             if (curTurn >= playerList.Length) curTurn = 0;
-        
 
+        yield return new WaitForSeconds(1f);
     }
     void ResetLists()
     {
