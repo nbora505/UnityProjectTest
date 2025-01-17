@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public GameObject[] playerList;
-    public List<GameObject> penaltyList;
     public List<GameObject> deadList;
     GameObject leaderPlayer;
     public Text LogText;

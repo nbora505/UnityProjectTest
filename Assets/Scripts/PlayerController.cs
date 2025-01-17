@@ -76,25 +76,25 @@ public class PlayerController : MonoBehaviour
         this.submitTime = submitTime;
     }
 
-    public void DrawBomb()//함수 폭탄 결정(파라메타 없음)
+    public void DrawBomb(int selectedBombNum)//함수 폭탄 결정(파라메터:선택된 심지 번호)
     {
-        int rnd = Random.Range(0, bombList.Count);
-        bool isTrueBomb = bombList[rnd]; // 딕셔너리가 필요한가? 필요없는것으로 판단
+        int isTrueBomb = Random.Range(0, bombList.Count);
 
-        if (isTrueBomb)
+        if (isTrueBomb == selectedBombNum)
         {
+            Debug.Log(gameObject.name + "... 사망!!!!!");
             gm.deadList.Add(this.gameObject);
-            gm.penaltyList.Remove(this.gameObject);
             // 사망처리
             isDead = true;
+            //사망 연출은 여기서 처리하는 걸로
         }
         else
         {
+            Debug.Log(gameObject.name + "... 생존!!!!!");
             remainingBomb--;
-            gm.penaltyList.Remove(this.gameObject);
-            bombList.RemoveAt(rnd);
-            // false가 지워지겠죠.
+            bombList.RemoveAt(isTrueBomb);// false가 지워지겠죠.
             // 생존처리
         }
+        gm.selectedBomb = -1;//다시 선택된 폭탄 번호 초기화
     }
 }
