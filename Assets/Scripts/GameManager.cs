@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     public int[] winCntOfEachTurn; //각각의 턴마다 플레이어들이 기록한 승리 횟수
 
     public CardManager cardManager;
-    ScoreManager scoreManager;
+    public ScoreManager scoreManager;
 
     void Start()
     {
@@ -59,6 +59,8 @@ public class GameManager : MonoBehaviour
         for (int i = 1; i <= 4; i++)
         {
             Debug.Log("=========Turn " + i + " =========");
+            //승수 비교해서 승자를 가리는 함수에 필요한 '제출받은 카드 리스트'를 턴마다 초기화
+            submitCardList.Clear();
 
             //카드 제출받기
             Debug.Log("=========카드 제출 단계=========");
@@ -71,7 +73,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("=========이번 턴 승자 결정=========");
             for (int j = 0; j < playerList.Length; j++)
             {
-                if(cardManager.CardCompare(submitCardList, curTurn)) //CardCompare()의 반환값이 true면...
+                bool checker = cardManager.CardCompare(submitCardList, j);
+
+                if (checker) //checker의 반환값이 true면...
                 {
                     //playerList[curTurn]이 이번 턴 승자라는 뜻!
                     winCntOfEachTurn[curTurn]++;
@@ -125,8 +129,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playerList.Length; i++)
         {
             //여기에서 플레이어 리스트[현재 차례]의 승수 선언 UI 활성화
-
-            Debug.Log(playerList[curTurn] + "의 승수 선언 : " + Random.Range(0, 4) + "승");
+            predictedWinCnt[curTurn] = Random.Range(0, 4);
+            Debug.Log(playerList[curTurn] + "의 승수 선언 : " + predictedWinCnt[curTurn] + "승");
 
             curTurn++;
             if (curTurn >= playerList.Length) curTurn = 0;

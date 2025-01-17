@@ -249,10 +249,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPlayer: 0
   cardList: 
+  bombList: 000001
   bombPrefab: []
-  remainedBomb: 3
-  weighting: 0
+  remainingBomb: 3
+  submitTime: 0
   bombVisible: 0
+  isDead: 0
+  gm: {fileID: 0}
+  expectedWins: 
 --- !u!65 &259528526
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -568,10 +572,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPlayer: 0
   cardList: 
+  bombList: 000001
   bombPrefab: []
-  remainedBomb: 3
-  weighting: 0
+  remainingBomb: 3
+  submitTime: 0
   bombVisible: 0
+  isDead: 0
+  gm: {fileID: 0}
+  expectedWins: 
 --- !u!65 &455787122
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -692,10 +700,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPlayer: 0
   cardList: 
+  bombList: 000001
   bombPrefab: []
-  remainedBomb: 3
-  weighting: 0
+  remainingBomb: 3
+  submitTime: 0
   bombVisible: 0
+  isDead: 0
+  gm: {fileID: 0}
+  expectedWins: 
 --- !u!65 &604149875
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -808,6 +820,50 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.6751227, y: -2.2229433, z: -23.114769}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &914573393
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 914573395}
+  - component: {fileID: 914573394}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &914573394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914573393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e8df546da4157243a54ac19d39538fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &914573395
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914573393}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1085,10 +1141,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPlayer: 0
   cardList: 
+  bombList: 000001
   bombPrefab: []
-  remainedBomb: 3
-  weighting: 0
+  remainingBomb: 3
+  submitTime: 0
   bombVisible: 0
+  isDead: 0
+  gm: {fileID: 0}
+  expectedWins: 
 --- !u!65 &1641913598
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1172,7 +1232,7 @@ GameObject:
   - component: {fileID: 1734969100}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1190,13 +1250,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerList: []
+  penaltyList: []
+  deadList: []
   maxPlayerCnt: 4
   curRound: 1
   maxRound: 3
   curTurn: 0
   maxCardCnt: 5
   selectedBomb: -1
+  submitCardList: 
+  predictedWinCnt: 
+  winCntOfEachTurn: 
   cardManager: {fileID: 91059400}
+  scoreManager: {fileID: 914573394}
 --- !u!4 &1734969101
 Transform:
   m_ObjectHideFlags: 0
@@ -1311,3 +1377,4 @@ SceneRoots:
   - {fileID: 1734969101}
   - {fileID: 91059401}
   - {fileID: 6732413}
+  - {fileID: 914573395}

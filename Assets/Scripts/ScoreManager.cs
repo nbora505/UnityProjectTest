@@ -7,7 +7,7 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     GameManager gm;
-    public PlayerController pc;
+    PlayerController pc;
     bool isSelect = false;
     // Start is called before the first frame update
     void Start()
