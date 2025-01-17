@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 
 
+
 public class ButtonManager : MonoBehaviour
 {
     [Header("Scripts")]
@@ -18,7 +19,7 @@ public class ButtonManager : MonoBehaviour
 
     [Header("Score,UI")]
     public Text text;
-    public int expectedWin = 0;
+    public int expectedWin = 0; // 예상승리수
     public Text logText;
 
     [Header("bomb")]
@@ -155,23 +156,37 @@ public class ButtonManager : MonoBehaviour
     #endregion 
 
     #region 승 수 관련
+    
     public void OnIncreaseScoreButtonClicked() // 승수 증가
     {
         expectedWin++;
         logText.text = "예상 승리횟수 : " + expectedWin.ToString() + "번";
-
+        
     }
    
     public void OnDecreaseScoreButtonClicked() // 승수 감소
     {
         expectedWin--;
         logText.text = "예상 승리횟수 " + expectedWin.ToString() + "번";
+        
     }
     public void OnSubmitScoreButtonClicked()
     {
-        gameManager.predictedWinCnt[gameManager.curTurn] = expectedWin;
-        gameManager.selectedWin = 0;
-        logText.text = "예상 승리횟수 : " + gameManager.playerList.Length.ToString() + "번 제출완료";
+        // gameManager.predictedWinCnt[gameManager.curTurn] = expectedWin;
+        //gameManager.selectedWin = 0;
+        logText.color = Color.black;
+        logText.text = "예상 승리횟수 : " + expectedWin.ToString() + "번 제출완료";
+       
+        if (expectedWin >= 0 && expectedWin <= 4)
+        {
+            gameManager.predictedWinCnt[gameManager.curTurn] = expectedWin;
+            gameManager.selectedWin = 0;
+        }
+        else
+        {
+            logText.text = "0에서 4사이의 값만 넣어라";
+            logText.color = Color.red;
+        }
     }
     #endregion
 

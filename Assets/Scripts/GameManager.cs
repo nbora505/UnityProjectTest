@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public List<GameObject> penaltyList;
     public List<GameObject> deadList;
     GameObject leaderPlayer;
+    public GameObject player;
+
     public Text LogText;
     public int maxPlayerCnt = 4;
 
@@ -32,7 +34,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerList = GameObject.FindGameObjectsWithTag("Player");
-
+        
         //리더 플레이어(맨 처음 시작할 사람) 정하기
         curTurn = Random.Range(0, playerList.Length);
         leaderPlayer = playerList[curTurn];
@@ -103,6 +105,9 @@ public class GameManager : MonoBehaviour
                 Debug.Log(curPlayer + " 예측 실패...");
 
                 //실패한 플레이어한테 폭탄 심지 등장시키게 하기
+                curPlayer.transform.GetChild(0).gameObject.SetActive(true);
+                curPlayer.transform.GetChild(1).gameObject.SetActive(true);
+                curPlayer.transform.GetChild(2).gameObject.SetActive(true);
                 yield return StartCoroutine(scoreManager.CheckBomb(curPlayer.GetComponent<PlayerController>()));
             }
             yield return new WaitForSeconds(1f);
