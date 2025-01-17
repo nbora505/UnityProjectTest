@@ -158,19 +158,20 @@ public class ButtonManager : MonoBehaviour
     public void OnIncreaseScoreButtonClicked() // 승수 증가
     {
         expectedWin++;
-        text.text = "예상 승리횟수 : " + expectedWin.ToString() + "번";
+        logText.text = "예상 승리횟수 : " + expectedWin.ToString() + "번";
 
     }
    
     public void OnDecreaseScoreButtonClicked() // 승수 감소
     {
         expectedWin--;
-        text.text = "예상 승리횟수 " + expectedWin.ToString() + "번";
+        logText.text = "예상 승리횟수 " + expectedWin.ToString() + "번";
     }
     public void OnSubmitScoreButtonClicked()
     {
-        //playerController.expectedWins.Add(expectedWin);
-        logText.text = "예상 승리횟수 : " + expectedWin.ToString() + "번 제출완료";
+        gameManager.predictedWinCnt[gameManager.curTurn] = expectedWin;
+        gameManager.selectedWin = 0;
+        logText.text = "예상 승리횟수 : " + gameManager.playerList.Length.ToString() + "번 제출완료";
     }
     #endregion
 

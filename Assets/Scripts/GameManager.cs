@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> penaltyList;
     public List<GameObject> deadList;
     GameObject leaderPlayer;
-
+    public Text LogText;
     public int maxPlayerCnt = 4;
 
     public int curRound = 1;
@@ -19,14 +20,15 @@ public class GameManager : MonoBehaviour
     public int maxCardCnt = 5;
 
     public int selectedBomb = -1;
-
+    public int selectedWin = -1;
     public List<int> submitCardList; //제출된 카드리스트
     public int[] predictedWinCnt; //각각의 라운드마다 플레이어들이 예측한 승리 횟수
     public int[] winCntOfEachTurn; //각각의 턴마다 플레이어들이 기록한 승리 횟수
 
     public CardManager cardManager;
     public ScoreManager scoreManager;
-
+    public ButtonManager buttonManager;
+    public GameObject TestBtn;
     void Start()
     {
         playerList = GameObject.FindGameObjectsWithTag("Player");
@@ -128,8 +130,14 @@ public class GameManager : MonoBehaviour
         //리더 플레이어부터 차례로 승수 선언. 임시로 랜덤숫자로 승리선언 처리해둠
         for (int i = 0; i < playerList.Length; i++)
         {
+            Debug.LogWarning(i+1 + "번째 순서");
             //여기에서 플레이어 리스트[현재 차례]의 승수 선언 UI 활성화
-            predictedWinCnt[curTurn] = Random.Range(0, 4);
+            LogText.text = i+1 + "번쨰 순서" + " 승 수 선택하세요";
+            TestBtn.SetActive(true);
+            yield return new WaitUntil(() => selectedWin == 0);
+            TestBtn.SetActive(false);
+            selectedWin = -1;
+            //predictedWinCnt[curTurn] = Random.Range(0, 4);
             Debug.Log(playerList[curTurn] + "의 승수 선언 : " + predictedWinCnt[curTurn] + "승");
 
             curTurn++;
