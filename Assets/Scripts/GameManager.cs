@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(playerList[curTurn] + "의 카드 제출 : " + selectedCard);
 
             curCardList.RemoveAt(tempCard);
-            submitCardList.Add(tempCard);//제출된 카드끼리 비교하기 위해 제출카드리스트에 넣기
+            submitCardList.Add(selectedCard);//제출된 카드끼리 비교하기 위해 제출카드리스트에 넣기
 
             curTurn++;
             if (curTurn >= playerList.Length) curTurn = 0;
