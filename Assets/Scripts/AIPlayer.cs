@@ -113,12 +113,21 @@ public class AIPlayer : PlayerController
     /// If DetermineWinningCard() and DetermineBestLosingCard() return a value of 0, the AI has determined that it has no winning hand, and the AI should discard the least valuable card.
     /// </summary>
     /// <returns>The lowest-scoring card in AI hands</returns>
-    public int ThrowGarbageCard()
+    public int ThrowGarbageCard(bool isReachedExpectWin)
     {
-        int throwCard = cardList.Min();
-        cardList.Remove(throwCard);
+        if (isReachedExpectWin)
+        {
+            int throwCard = cardList.Max();
+            cardList.Remove(throwCard);
+            return throwCard;
+        }
+        else
+        {
+            int throwCard = cardList.Min();
+            cardList.Remove(throwCard);
 
-        return throwCard;
+            return throwCard;
+        }
     }
 
     /// <summary>
